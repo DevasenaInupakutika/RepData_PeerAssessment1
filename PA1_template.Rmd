@@ -1,20 +1,68 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Peer_Assessment_Devasena"
+author: "Devasena"
+date: "16 August 2014"
+output: html_document
+---
 
+This Peer Assessment is a part of assignment for Reproducible Research course by Coursera. This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 
-## Loading and preprocessing the data
+### Step 1: Loading and preprocessing data
 
+```{r, echo=TRUE}
+peer_data = read.csv("activity.csv")
+```
 
+### Step 2: Calculating mean total number of steps taken per day (ignoring missing values for this part)
 
-## What is mean total number of steps taken per day?
+#### 1. Histogram of total number of steps taken each day (Using "group by" clause of SQL in "sqldf")
 
+```{r, echo=TRUE}
+library(sqldf)
+peer_data_df<-sqldf("select date, sum(steps) SUM_STEP from peer_data group by date")
+hist(as.numeric(peer_data_df$SUM_STEP), xlab="Total number of steps per day")
+```
 
+#### 2. Calculating and reporting the mean and median of total number of steps taken each day (using same function as above)
 
-## What is the average daily activity pattern?
+##### i) Mean of total number of steps taken each day is as below:
 
+```{r, echo=TRUE}
+peer_data_df1<-sqldf("select date, avg(steps) STEP, max(steps) MAX_STEP, min(steps) MIN_STEP from peer_data group by date")
 
+peer_data_df1$STEP
+```
 
-## Imputing missing values
+##### ii) Median of steps taken each day is as below:
 
+```{r, echo=TRUE}
+peer_data_df2<-sqldf("select date, STEP, (MAX_STEP + MIN_STEP)/2 MEDIAN_STEP from peer_data_df1")
 
+peer_data_df2$MEDIAN_STEP
+```
 
-## Are there differences in activity patterns between weekdays and weekends?
+### Step 3. Average daily activity pattern
+
+#### 1. Time series plot (type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+```{r, echo=TRUE}
+x_peer_plot<-peer_data$interval
+y_peer_plot<-peer_data$steps
+plot(x_peer_plot, y_peer_plot, type="l")
+```
+
+#### 2. A 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps
+
+```{r, echo=TRUE}
+
+```
+
+### Step 4. Inputing missing values
+
+#### 1. Calculating and reporting the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+
+```{r, echo=TRUE}
+sum(is.na(peer_data))
+```
+
+#### 2. 
